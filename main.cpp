@@ -31,7 +31,7 @@ void SDL_RenderDrawCircle(SDL_Renderer *renderer, int centerX, int centerY, int 
     }
 }
 
-void SDL_AppIterate(SDL_Renderer *renderer, float &scaleFactor, int &direction)
+void SDL_AppIterate(SDL_Renderer *renderer, float &scaleFactor, int &direction, int xPos, int yPos)
 {
     scaleFactor += direction * 0.01f;
 
@@ -45,7 +45,7 @@ void SDL_AppIterate(SDL_Renderer *renderer, float &scaleFactor, int &direction)
 
     SDL_SetRenderDrawColor(renderer, 30, 144, 255, 255);
 
-    int centerX = 400, centerY = 300;
+    int centerX = xPos, centerY = yPos;
     int radius = static_cast<int>(100 * scaleFactor);
 
     SDL_RenderDrawCircle(renderer, centerX, centerY, radius);
@@ -90,6 +90,8 @@ int main(int argc, char *argv[])
 
     SDL_Event event;
 
+    int xPos = WINDOW_WIDTH / 2, yPos = WINDOW_HEIGHT / 2;
+
     while (running)
     {
         while (SDL_PollEvent(&event) != 0)
@@ -98,9 +100,17 @@ int main(int argc, char *argv[])
             {
                 running = false;
             }
+            else if (event.type == SDL_MOUSEBUTTONDOWN)
+            {
+                if (event.button.button == SDL_BUTTON_LEFT)
+                {
+                    xPos = event.button.x;
+                    yPos = event.button.y;
+                }
+            }
         }
 
-        SDL_AppIterate(renderer, scaleFactor, direction);
+        SDL_AppIterate(renderer, scaleFactor, direction, xPos, yPos);
 
         SDL_Delay(16);
     }
