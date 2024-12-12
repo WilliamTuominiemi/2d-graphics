@@ -1,8 +1,35 @@
 #include <SDL2/SDL.h>
 #include <iostream>
+#include <cmath>
 
 const int WINDOW_WIDTH = 800;
 const int WINDOW_HEIGHT = 600;
+
+void SDL_RenderDrawCircle(SDL_Renderer *renderer, int centerX, int centerY, int radius)
+{
+    int x = radius, y = 0;
+    int err = 0;
+
+    while (x >= y)
+    {
+        SDL_RenderDrawPoint(renderer, centerX + x, centerY + y);
+        SDL_RenderDrawPoint(renderer, centerX + y, centerY + x);
+        SDL_RenderDrawPoint(renderer, centerX - y, centerY + x);
+        SDL_RenderDrawPoint(renderer, centerX - x, centerY + y);
+        SDL_RenderDrawPoint(renderer, centerX - x, centerY - y);
+        SDL_RenderDrawPoint(renderer, centerX - y, centerY - x);
+        SDL_RenderDrawPoint(renderer, centerX + y, centerY - x);
+        SDL_RenderDrawPoint(renderer, centerX + x, centerY - y);
+
+        y++;
+        err += 2 * y + 1;
+        if (2 * err >= 2 * x + 1)
+        {
+            x--;
+            err -= 2 * x + 1;
+        }
+    }
+}
 
 void SDL_AppIterate(SDL_Renderer *renderer, float &scaleFactor, int &direction)
 {
@@ -16,10 +43,13 @@ void SDL_AppIterate(SDL_Renderer *renderer, float &scaleFactor, int &direction)
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
     SDL_RenderClear(renderer);
 
-    SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
+    SDL_SetRenderDrawColor(renderer, 30, 144, 255, 255);
 
-    SDL_Rect rect = {300, 200, static_cast<int>(200 * scaleFactor), static_cast<int>(150 * scaleFactor)};
-    SDL_RenderFillRect(renderer, &rect);
+    int centerX = 400, centerY = 300;
+    int radius = static_cast<int>(100 * scaleFactor);
+
+    SDL_RenderDrawCircle(renderer, centerX, centerY, radius);
+
     SDL_RenderPresent(renderer);
 }
 
