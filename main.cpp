@@ -63,7 +63,7 @@ int main(int argc, char *argv[])
     }
 
     // Create an SDL window
-    SDL_Window *window = SDL_CreateWindow("Box Transformation Example",
+    SDL_Window *window = SDL_CreateWindow("Breathing Circle",
                                           SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
                                           WINDOW_WIDTH, WINDOW_HEIGHT, SDL_WINDOW_SHOWN);
     if (!window)
