@@ -1,6 +1,28 @@
 #include <SDL2/SDL.h>
 #include <iostream>
 
+const int WINDOW_WIDTH = 800;
+const int WINDOW_HEIGHT = 600;
+
+void SDL_AppIterate(SDL_Renderer *renderer, float &scaleFactor, int &direction)
+{
+    scaleFactor += direction * 0.01f;
+
+    if (scaleFactor >= 1.5f || scaleFactor <= 0.5f)
+    {
+        direction = -direction;
+    }
+
+    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+    SDL_RenderClear(renderer);
+
+    SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
+
+    SDL_Rect rect = {300, 200, static_cast<int>(200 * scaleFactor), static_cast<int>(150 * scaleFactor)};
+    SDL_RenderFillRect(renderer, &rect);
+    SDL_RenderPresent(renderer);
+}
+
 int main(int argc, char *argv[])
 {
     // Initialize SDL
@@ -11,9 +33,9 @@ int main(int argc, char *argv[])
     }
 
     // Create an SDL window
-    SDL_Window *window = SDL_CreateWindow("Basic 2D Graphics",
+    SDL_Window *window = SDL_CreateWindow("Box Transformation Example",
                                           SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
-                                          800, 600, SDL_WINDOW_SHOWN);
+                                          WINDOW_WIDTH, WINDOW_HEIGHT, SDL_WINDOW_SHOWN);
     if (!window)
     {
         std::cerr << "Window could not be created! SDL_Error: " << SDL_GetError() << std::endl;
@@ -31,7 +53,11 @@ int main(int argc, char *argv[])
         return 1;
     }
 
+    float scaleFactor = 1.0f;
+    int direction = 1;
+
     bool running = true;
+
     SDL_Event event;
 
     while (running)
@@ -44,15 +70,9 @@ int main(int argc, char *argv[])
             }
         }
 
-        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
-        SDL_RenderClear(renderer);
+        SDL_AppIterate(renderer, scaleFactor, direction);
 
-        SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
-
-        SDL_Rect rect = {300, 200, 200, 150};
-        SDL_RenderFillRect(renderer, &rect);
-
-        SDL_RenderPresent(renderer);
+        SDL_Delay(16);
     }
 
     SDL_DestroyRenderer(renderer);
